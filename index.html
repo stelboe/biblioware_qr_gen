@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>BiblioWare</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script type="text/javascript" src="jquery.qrcode.min.js"></script>
+  <script type="text/javascript" src="sha1.js"></script>
+
+    <style>
+        @import url(http://fonts.googleapis.com/css?family=Dosis:200,400,700);
+        @import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:700,400,300);
+        @media (min-width: 10px) {
+            body{
+                margin: 0;
+                padding: 0;
+                background: #fff;
+                color: #fff;
+                font-family: 'Dosis', sans-serif;
+                font-size: 12px;
+            }
+            a{
+                text-decoration: none;
+                color:#5379fa;
+            }
+            .header{
+                position: absolute;
+                width: 100%;
+                text-align: center;
+                top: calc(30% - 85px);
+                z-index: 2;
+            }
+            .header div{
+                color: #fff;
+                font-family: 'Dosis', sans-serif;
+                font-size: 35px;
+                font-weight: 200;
+            }
+            .header div span{
+                color: #5379fa !important;
+            }
+            .login{
+                position: absolute;
+                top: calc(40% - 85px);
+                text-align: center;
+                height: 150px;
+                width: 100%;
+                z-index: 2;
+            }
+            .login input[type=text], .login input[type=password]{
+                width: 250px;
+                height: 30px;
+                background: transparent;
+                border: 1px solid #5379fa;
+                border-radius: 2px;
+                color: #5379fa;
+                font-family: 'Dosis', sans-serif;
+                font-size: 20px;
+                letter-spacing: 1px;
+                font-weight: 400;
+                padding: 4px;
+                margin-top: 10px;
+            }
+            .login input[type=button]{
+                width: 260px;
+                height: 35px;
+                background: #5379fa;
+                border: 1px solid #5379fa;
+                cursor: pointer;
+                border-radius: 2px;
+                color: #FFF;
+                font-family: 'Dosis', sans-serif;
+                font-size: 16px;
+                font-weight: 400;
+                padding: 6px;
+                margin-top: 10px;
+                -webkit-appearance: none;
+                border-radius: 0;
+            }
+
+            .login input[type=button]:hover{
+                opacity: 0.8;
+            }
+
+            .login input[type=button]:active{
+                opacity: 0.6;
+            }
+
+            .login input[type=text]:focus{
+                outline: none;
+                border: 1px solid darkgray;
+            }
+
+            .login input[type=password]:focus{
+                outline: none;
+                border: 1px solid darkgray;
+            }
+
+            .login input[type=button]:focus{
+                outline: none;
+            }
+
+            ::-webkit-input-placeholder{
+                color:lightgray;
+            }
+
+            ::-moz-input-placeholder{
+                color: lightgray;
+            }
+            #c_qrcode{
+
+                width: 100%;
+                height: 200px;
+                display: none;
+            }
+            #qrcode {
+                border: 1px solid #5379fa;
+                padding:5px;
+                padding-bottom: 1px;
+            }
+            #error {
+                font-size: 15px;
+                display: none;
+                color: #5379fa;
+            }
+        }
+
+         @media (min-width: 580px){
+             #error {
+                 display: none;
+                 color: #5379fa;
+             }
+             #qrcode {
+                 border: 0px;
+                 padding:0px;
+                 padding-bottom: 0px;
+             }
+             #c_qrcode{
+                 margin-top: -40px;
+                 margin-left: -20px;
+                 border: 1px solid #5379fa;
+                 width: 200px;
+                 height: 200px;
+                 display: none;
+             }
+
+             .header{
+                 position: absolute;
+                 top: calc(50% - 35px);
+                 left: calc(50% - 255px);
+                 z-index: 2;
+             }
+
+             .header div{
+                 float: left;
+                 color: #fff;
+                 font-family: 'Dosis', sans-serif;
+                 font-size: 35px;
+                 font-weight: 200;
+             }
+
+             .header div span{
+                 color: #5379fa !important;
+             }
+
+             .login{
+                 position: absolute;
+                 top: calc(50% - 85px);
+                 left: calc(50% - 50px);
+                 height: 150px;
+                 width: 350px;
+                 padding: 10px;
+                 z-index: 2;
+             }
+         }
+</style>
+</head>
+<body>
+    <!--BIBLIOWARE HEADER -->
+	<div class="header">
+		<div>
+            <span>
+                <a href="">BiblioWare</a>
+            </span>
+        </div>
+	</div>
+    <!--LOGIN FELD -->
+    <section>
+        <div id="c_login" class="login">
+             <input type="text" placeholder="username" id="inp_user"><br>
+             <input type="password" placeholder="password" id="inp_password"><br>
+             <input type="button" id="btn_generate" value="Generate">
+             <p id="error"></p>
+        </div>
+    </section>
+    <!--QR CODE -->
+    <section>
+        <div id="c_qrcode" class="login">
+            <div id="qrcode" style="width: 200px; margin: auto"></div>
+        </div>
+    </section>
+
+<script>
+    $(document).ready(function() {
+        $("#btn_generate").click(function() {
+            var user = $("#inp_user").val();
+            var password = $("#inp_password").val();
+            if (user != "" && password != "") {
+                var post = { "user": user, "password": password };
+                
+                $.post("ldap.php", post, function(data) {
+                    if (data === "true") {
+                        generateQRCode(user, password);
+                        $("#c_login").hide();
+                        $("#c_qrcode").show();
+                    }
+                    else {
+                        $("#error").text("Fehlerhafte Eingabe!");
+                        $("#error").show();
+                    }
+                });
+            }
+            else {
+                $("#error").text("Du musst deine Moodle-Daten eingeben!");
+                $("#error").show();
+            }
+        });
+
+        function generateQRCode(user, pwd) {
+            var input = user + "#" + sha1(pwd);
+            $("#qrcode").empty();
+            $("#qrcode").qrcode({width: 200, height: 200, text: input});
+        }
+
+    });
+</script>
+</body>
+</html>
