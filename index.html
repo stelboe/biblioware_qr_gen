@@ -62,7 +62,7 @@
                 padding: 4px;
                 margin-top: 10px;
             }
-            .login input[type=button]{
+            .login input[type=submit]{
                 width: 260px;
                 height: 35px;
                 background: #5379fa;
@@ -78,12 +78,27 @@
                 -webkit-appearance: none;
                 border-radius: 0;
             }
-
-            .login input[type=button]:hover{
+            #reset{
+                width:200px;
+                height: 35px;
+                background: #5379fa;
+                border: 1px solid #5379fa;
+                cursor: pointer;
+                border-radius: 2px;
+                color: #FFF;
+                font-family: 'Dosis', sans-serif;
+                font-size: 16px;
+                font-weight: 400;
+                padding: 6px;
+                margin-top: 20px;
+                -webkit-appearance: none;
+                border-radius: 0;
+            }
+            .login input[type=submit]:hover{
                 opacity: 0.8;
             }
 
-            .login input[type=button]:active{
+            .login input[type=submit]:active{
                 opacity: 0.6;
             }
 
@@ -97,7 +112,7 @@
                 border: 1px solid darkgray;
             }
 
-            .login input[type=button]:focus{
+            .login input[type=submit]:focus{
                 outline: none;
             }
 
@@ -144,7 +159,7 @@
              }
              #c_qrcode{
                  margin-top: -40px;
-                 margin-left: -20px;
+                 margin-left: 60px;
                  border: 1px solid #5379fa;
                  width: 200px;
                  height: 200px;
@@ -196,7 +211,7 @@
         <div id="c_login" class="login">
              <input type="text" placeholder="username" id="inp_user"><br>
              <input type="password" placeholder="password" id="inp_password"><br>
-             <input type="button" id="btn_generate" value="Generate">
+             <input type="submit" id="btn_generate" value="Generate">
              <p id="error"></p>
         </div>
     </section>
@@ -204,6 +219,7 @@
     <section>
         <div id="c_qrcode" class="login">
             <div id="qrcode" style="width: 200px; margin: auto"></div>
+            <input type="button" id="reset" value="Abmelden">
         </div>
     </section>
 
@@ -213,7 +229,7 @@
         if(localStorage.uid){
             var input = localStorage.uid;
             var user =  input.split("#");
-            $("#error").text("Eingelogged als "+user[0]);
+            $("#error").text("Angemeldet als "+user[0]);
             $("#error").show();
             $("#error").click(function () {
                 $("#error").hide();
@@ -259,7 +275,10 @@
             $("#qrcode").empty();
             $("#qrcode").qrcode({width: 200, height: 200, text: input});
         }
-
+        $('#reset').click(function () {
+            localStorage.removeItem("uid");
+            location.reload();
+        });
     });
 </script>
 </body>
