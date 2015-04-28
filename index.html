@@ -253,6 +253,7 @@
                         $("#c_qrcode").show();
                     }
                     else {
+                        localStorage.removeItem("uid");
                         $("#error").text("Fehlerhafte Eingabe!");
                         $("#error").show();
                     }
@@ -279,6 +280,35 @@
             localStorage.removeItem("uid");
             location.reload();
         });
+        $(document).keypress(function(e) {
+            if(e.which == 13) {
+                $("#btn_generate").click();
+            }
+        });
+
+
+        /**
+         * Stores QR-Code Data in LocalStorage uid
+         * @param data
+         */
+        function storeData(data){
+            var data = localStorage.uid;
+        }
+
+        /**
+         * Load Data from LocalStorage uid
+         * @returns value of LocalStorage
+         * */
+        function loadData(){
+            return localStorage.uid;
+        }
+
+        /**
+         * Remove Data from Localstorage uid
+         */
+        function removeData(){
+            localStorage.removeItem("uid");
+        }
     });
 </script>
 </body>
